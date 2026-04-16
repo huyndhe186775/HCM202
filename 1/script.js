@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     videoContainer.addEventListener('click', (e) => {
         // Không kích hoạt khi nhấp vào bảng điều khiển (nút âm thanh, thanh tiến trình)
         if (controls.contains(e.target)) return;
-
+        
         // Chỉ cho phép điều khiển sau khi đã qua màn hình Start
         if (!overlay.classList.contains('fade-out')) return;
 
