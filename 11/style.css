@@ -190,7 +190,12 @@ html {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    transition: opacity 0.5s ease, transform 0.5s ease;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    cursor: grab;
+}
+
+#video-controls:active {
+    cursor: grabbing;
 }
 
 #video-controls.hidden {

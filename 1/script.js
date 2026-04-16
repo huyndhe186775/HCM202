@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     videoContainer.addEventListener('click', (e) => {
         // Không kích hoạt khi nhấp vào bảng điều khiển (nút âm thanh, thanh tiến trình)
         if (controls.contains(e.target)) return;
-        
+
         // Chỉ cho phép điều khiển sau khi đã qua màn hình Start
         if (!overlay.classList.contains('fade-out')) return;
 
@@ -90,6 +90,53 @@ document.addEventListener('DOMContentLoaded', () => {
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
+
+    // Draggable Controls
+    let isDragging = false;
+    let startY;
+    let startBottom;
+
+    const startDrag = (e) => {
+        // Prevent dragging when clicking on slider or buttons
+        if (e.target.closest('#progress-bar') || e.target.closest('.icon-btn')) return;
+
+        isDragging = true;
+        startY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        const style = window.getComputedStyle(controls);
+        startBottom = parseInt(style.bottom);
+        controls.style.transition = 'opacity 0.5s ease'; // Remove transform transition while dragging
+    };
+
+    const drag = (e) => {
+        if (!isDragging) return;
+
+        e.preventDefault();
+        const currentY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        const deltaY = startY - currentY;
+        let newBottom = startBottom + deltaY;
+
+        // Boundaries
+        const minBottom = 10;
+        const maxBottom = window.innerHeight - controls.offsetHeight - 20;
+        newBottom = Math.max(minBottom, Math.min(newBottom, maxBottom));
+
+        controls.style.bottom = newBottom + 'px';
+    };
+
+    const stopDrag = () => {
+        if (isDragging) {
+            isDragging = false;
+            controls.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        }
+    };
+
+    controls.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', drag);
+    window.addEventListener('mouseup', stopDrag);
+
+    controls.addEventListener('touchstart', startDrag, { passive: false });
+    window.addEventListener('touchmove', drag, { passive: false });
+    window.addEventListener('touchend', stopDrag);
 
     // Đảm bảo video luôn ở trạng thái sẵn sàng
     video.load();
