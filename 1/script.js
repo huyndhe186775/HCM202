@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const video = document.getElementById('bg-video');
+    const videoContainer = document.getElementById('video-container');
     const startBtn = document.getElementById('start-btn');
     const overlay = document.getElementById('overlay');
 
@@ -23,15 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const controls = document.getElementById('video-controls');
-    const playPauseBtn = document.getElementById('play-pause-btn');
     const muteBtn = document.getElementById('mute-btn');
     const progressBar = document.getElementById('progress-bar');
     const progressIndicator = document.getElementById('progress-indicator');
     const currentTimeEl = document.getElementById('current-time');
     const durationEl = document.getElementById('duration');
 
-    const playIcon = playPauseBtn.querySelector('.play-icon');
-    const pauseIcon = playPauseBtn.querySelector('.pause-icon');
     const volumeUpIcon = muteBtn.querySelector('.volume-up-icon');
     const volumeOffIcon = muteBtn.querySelector('.volume-off-icon');
 
@@ -39,23 +37,19 @@ document.addEventListener('DOMContentLoaded', () => {
         controls.classList.remove('hidden');
     }
 
-    // Play/Pause
-    playPauseBtn.addEventListener('click', () => {
+    // Play/Pause - Chạm màn hình để điều khiển
+    videoContainer.addEventListener('click', (e) => {
+        // Không kích hoạt khi nhấp vào bảng điều khiển (nút âm thanh, thanh tiến trình)
+        if (controls.contains(e.target)) return;
+
+        // Chỉ cho phép điều khiển sau khi đã qua màn hình Start
+        if (!overlay.classList.contains('fade-out')) return;
+
         if (video.paused) {
             video.play();
         } else {
             video.pause();
         }
-    });
-
-    video.addEventListener('play', () => {
-        playIcon.classList.add('hidden');
-        pauseIcon.classList.remove('hidden');
-    });
-
-    video.addEventListener('pause', () => {
-        playIcon.classList.remove('hidden');
-        pauseIcon.classList.add('hidden');
     });
 
     // Mute/Unmute
